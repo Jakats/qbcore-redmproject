@@ -2,6 +2,3 @@
 
 ## I wouldn't use this
 ##wip
-
-#todo/
-Stuff
