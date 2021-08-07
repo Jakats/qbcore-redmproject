@@ -85,7 +85,7 @@ QBCore.Commands.Add("tpm", "TP To Marker (Admin Only)", {}, false, function(sour
 	TriggerClientEvent('QBCore:Command:GoToMarker', source)
 end, "admin")
 
-QBCore.Commands.Add("givemoney", "Give A Player Money (Admin Only)", {{name="id", help="Player ID"},{name="moneytype", help="Type of money (cash, bank, crypto)"}, {name="amount", help="Amount of money"}}, true, function(source, args)
+QBCore.Commands.Add("givemoney", "Give A Player Money (Admin Only)", {{name="id", help="Player ID"},{name="moneytype", help="Type of money (cash, bank)"}, {name="amount", help="Amount of money"}}, true, function(source, args)
 	local Player = QBCore.Functions.GetPlayer(tonumber(args[1]))
 	if Player ~= nil then
 		Player.Functions.AddMoney(tostring(args[2]), tonumber(args[3]))
@@ -94,7 +94,7 @@ QBCore.Commands.Add("givemoney", "Give A Player Money (Admin Only)", {{name="id"
 	end
 end, "admin")
 
-QBCore.Commands.Add("setmoney", "Set Players Money Amount (Admin Only)", {{name="id", help="Player ID"},{name="moneytype", help="Type of money (cash, bank, crypto)"}, {name="amount", help="Amount of money"}}, true, function(source, args)
+QBCore.Commands.Add("setmoney", "Set Players Money Amount (Admin Only)", {{name="id", help="Player ID"},{name="moneytype", help="Type of money (cash, bank)"}, {name="amount", help="Amount of money"}}, true, function(source, args)
 	local Player = QBCore.Functions.GetPlayer(tonumber(args[1]))
 	if Player ~= nil then
 		Player.Functions.SetMoney(tostring(args[2]), tonumber(args[3]))
