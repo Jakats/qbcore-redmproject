@@ -1,6 +1,10 @@
 local charPed = nil
 
 Citizen.CreateThread(function()
+    RequestImap(-1699673416)
+    RequestImap(1679934574)
+    RequestImap(183712523)
+    
 	while true do
 		Citizen.Wait(0)
 		if NetworkIsSessionStarted() then
@@ -21,7 +25,29 @@ Config = {
 --- CODE
 
 local choosingCharacter = false
-local cam = nil
+
+local cams = {
+    {
+        type = "customization",
+        x = -561.8157,
+        y = -3780.966,
+        z = 239.0805,
+        rx = -4.2146,
+        ry = -0.0007,
+        rz = -87.8802,
+        fov = 30.0
+    },
+    {
+        type = "selection",
+        x = -562.8157,
+        y = -3776.266,
+        z = 239.0805,
+        rx = -4.2146,
+        ry = -0.0007,
+        rz = -87.8802,
+        fov = 30.0
+    }
+}
 
 function skyCam(bool)
     SetNuiFocus(bool, bool)
@@ -33,14 +59,13 @@ function skyCam(bool)
     skyCam(bool)
 end
 
-RegisterCommand("skin", function()
+RegisterCommand("skin", function(data)
     local cData = data.cData
     DoScreenFadeOut(10)
     TriggerServerEvent('qb-multicharacter:server:loadUserData', cData)
-    skyCam(false)
+    skyCam(true)
     SetEntityAsMissionEntity(charPed, true, true)
     DeleteEntity(charPed)
-
 end)
 
 RegisterNUICallback('closeUI', function()
@@ -75,10 +100,6 @@ AddEventHandler('qb-multicharacter:client:chooseChar', function()
     DoScreenFadeOut(10)
     Citizen.Wait(1000)
     GetInteriorAtCoords(-558.9098, -3775.616, 238.59, 137.98)
-    -- TriggerEvent('qb-interior:chooseChar')
-    -- while not IsInteriorReady(interior) do
-    --     Citizen.Wait(1000)
-    -- end
     FreezeEntityPosition(PlayerPedId(), true)
     SetEntityCoords(PlayerPedId(), Config.HiddenCoords.x, Config.HiddenCoords.y, Config.HiddenCoords.z)
     Citizen.Wait(1500)
@@ -90,6 +111,8 @@ end)
 function selectChar()
     skyCam(true)
 end
+
+
 
 RegisterNUICallback('cDataPed', function(data)
     local cData = data.cData  
@@ -192,10 +215,19 @@ function skyCam(bool)
         DoScreenFadeIn(1000)
         SetTimecycleModifier('hud_def_blur')
         SetTimecycleModifierStrength(1.0)
-        FreezeEntityPosition(PlayerPedId(), false)
-        cam = CreateCamWithParams("DEFAULT_SCRIPTED_CAMERA", -561.8157, -3780.966, 239.0805, -4.2146 ,-0.0007, -87.8802, 30.0, false, 0)
-        SetCamActive(cam, true)
+        cam = CreateCam("DEFAULT_SCRIPTED_CAMERA")    
+        SetCamCoord(cam, -555.925,-3778.709,238.597)
+        SetCamRot(cam, -20.0, 0.0, 83)
+        SetCamActive(cam, true)    
         RenderScriptCams(true, false, 1, true, true)
+        fixedCam = CreateCam("DEFAULT_SCRIPTED_CAMERA")
+        SetCamCoord(fixedCam, -561.206,-3776.224,239.597)
+        SetCamRot(fixedCam, -20.0, 0, 270.0)
+        SetCamActive(fixedCam, true)
+        SetCamActiveWithInterp(fixedCam, cam, 3900, true, true)
+        Wait(3900)
+        DestroyCam(groundCam)
+        InterP = true
     else
         SetTimecycleModifier('default')
         SetCamActive(cam, false)
