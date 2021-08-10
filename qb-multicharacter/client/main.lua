@@ -5,15 +5,17 @@ Citizen.CreateThread(function()
 		Citizen.Wait(0)
 		if NetworkIsSessionStarted() then
 			TriggerEvent('qb-multicharacter:client:chooseChar')
+
+          
 			return
 		end
 	end
 end)
 
 Config = {
-    PedCoords = vector4(-813.97, 176.22, 76.74, -7.5), 
-    HiddenCoords = vector4(-812.23, 182.54, 76.74, 156.5), 
-    CamCoords = vector4(-814.02, 179.56, 76.74, 198.5), 
+    PedCoords = vector4(-558.9098, -3775.616, 238.59, 137.98), 
+    HiddenCoords = vector4(-558.9098, -3775.616, 238.59, 137.98), 
+    -- CamCoords = vector4(-814.02, 179.56, 76.74, 198.5), 
 }
 
 --- CODE
@@ -21,7 +23,7 @@ Config = {
 local choosingCharacter = false
 local cam = nil
 
-function openCharMenu(bool)
+function skyCam(bool)
     SetNuiFocus(bool, bool)
     SendNUIMessage({
         action = "ui",
@@ -31,8 +33,18 @@ function openCharMenu(bool)
     skyCam(bool)
 end
 
+RegisterCommand("skin", function()
+    local cData = data.cData
+    DoScreenFadeOut(10)
+    TriggerServerEvent('qb-multicharacter:server:loadUserData', cData)
+    skyCam(false)
+    SetEntityAsMissionEntity(charPed, true, true)
+    DeleteEntity(charPed)
+
+end)
+
 RegisterNUICallback('closeUI', function()
-    openCharMenu(false)
+    skyCam(false)
 end)
 
 RegisterNUICallback('disconnectButton', function()
@@ -45,7 +57,7 @@ RegisterNUICallback('selectCharacter', function(data)
     local cData = data.cData
     DoScreenFadeOut(10)
     TriggerServerEvent('qb-multicharacter:server:loadUserData', cData)
-    openCharMenu(false)
+    skyCam(false)
     SetEntityAsMissionEntity(charPed, true, true)
     DeleteEntity(charPed)
 end)
@@ -62,21 +74,21 @@ AddEventHandler('qb-multicharacter:client:chooseChar', function()
     SetNuiFocus(false, false)
     DoScreenFadeOut(10)
     Citizen.Wait(1000)
-    local interior = GetInteriorAtCoords(-814.89, 181.95, 76.85 - 18.9)
-    LoadInterior(interior)
-    while not IsInteriorReady(interior) do
-        Citizen.Wait(1000)
-    end
+    GetInteriorAtCoords(-558.9098, -3775.616, 238.59, 137.98)
+    -- TriggerEvent('qb-interior:chooseChar')
+    -- while not IsInteriorReady(interior) do
+    --     Citizen.Wait(1000)
+    -- end
     FreezeEntityPosition(PlayerPedId(), true)
     SetEntityCoords(PlayerPedId(), Config.HiddenCoords.x, Config.HiddenCoords.y, Config.HiddenCoords.z)
     Citizen.Wait(1500)
     ShutdownLoadingScreen()
     ShutdownLoadingScreenNui()
-    openCharMenu(true)
+    skyCam(true)
 end)
 
 function selectChar()
-    openCharMenu(true)
+    skyCam(true)
 end
 
 RegisterNUICallback('cDataPed', function(data)
@@ -176,19 +188,12 @@ RegisterNUICallback('removeCharacter', function(data)
 end)
 
 function skyCam(bool)
-    SetRainLevel(0.0)
-    TriggerEvent('qb-weathersync:client:DisableSync')
-    SetWeatherTypePersist('EXTRASUNNY')
-    SetWeatherTypeNow('EXTRASUNNY')
-    SetWeatherTypeNowPersist('EXTRASUNNY')
-    NetworkOverrideClockTime(12, 0, 0)
-
     if bool then
         DoScreenFadeIn(1000)
         SetTimecycleModifier('hud_def_blur')
         SetTimecycleModifierStrength(1.0)
         FreezeEntityPosition(PlayerPedId(), false)
-        cam = CreateCamWithParams("DEFAULT_SCRIPTED_CAMERA", -813.46, 178.95, 76.85, 0.0 ,0.0, 174.5, 60.00, false, 0)
+        cam = CreateCamWithParams("DEFAULT_SCRIPTED_CAMERA", -561.8157, -3780.966, 239.0805, -4.2146 ,-0.0007, -87.8802, 30.0, false, 0)
         SetCamActive(cam, true)
         RenderScriptCams(true, false, 1, true, true)
     else
