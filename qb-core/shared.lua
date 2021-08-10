@@ -45,10 +45,10 @@ QBShared.Items = {
 --[[
 	Template			The name that the					The weight of the	What sort of item it	If the item is					The imagie used for the item		Is the item			Can you actively	 The required level				The description of the item
 	Spawn name			player sees in his inv				item (inventory)	is (item | weapon)		supposed to have ammo			(inventory)							stackable?			use the item?		 to use the item(if useable)	(inventory)				 ]]
-	["cannedbeans"] 	= {["label"] = "Beans in a can",	["weight"] = 0.1,	["type"] = "item", 		["ammotype"] = nil, 			["image"] = "cannedbeans.png",		["unique"] = false,	["useable"] = true,	["level"] = 0,		["description"] = "Canned beans, not something somebody would want to eat willingly. Atleast I can now make a bean joke about it."},
+	["cannedbeans"] 	= {["name"] = "cannedbeans", 	["label"] = "Beans in a can",	["weight"] = 0.1,	["type"] = "item", 		["ammotype"] = nil, 			["image"] = "cannedbeans.png",		["unique"] = false,	["useable"] = true,	["level"] = 0,		["description"] = "Canned beans, not something somebody would want to eat willingly. Atleast I can now make a bean joke about it."},
 	
-	["apple"] 			= {["label"] = "Apple",				["weight"] = 0.1,	["type"] = "item", 		["ammotype"] = nil, 			["image"] = "apple.png",			["unique"] = false,	["useable"] = true,	["level"] = 0,		["description"] = "An apple a day keeps my stomach filled. No worries about a fricking scurvy. It is only natural that it keeps the doctor away."},
-	["lantern"] 		= {["label"] = "Lantern",			["weight"] = 0.1,	["type"] = "item", 		["ammotype"] = nil, 			["image"] = "lantern.png",			["unique"] = false,	["useable"] = true,	["level"] = 0,		["description"] = "Illuminate your path to becoming the best cowboy the wildwest has ever seen"},
+	["apple"] 			= {["name"] = "apple", 			["label"] = "Apple",			["weight"] = 0.1,	["type"] = "item", 		["ammotype"] = nil, 			["image"] = "apple.png",			["unique"] = false,	["useable"] = true,	["level"] = 0,		["description"] = "An apple a day keeps my stomach filled. No worries about a fricking scurvy. It is only natural that it keeps the doctor away."},
+	["lantern"] 		= {["name"] = "lantern", 		["label"] = "Lantern",			["weight"] = 0.1,	["type"] = "item", 		["ammotype"] = nil, 			["image"] = "lantern.png",			["unique"] = false,	["useable"] = true,	["level"] = 0,		["description"] = "Illuminate your path to becoming the best cowboy the wildwest has ever seen"},
 }
 
 -- // HASH WEAPON ITEMS, NEED SOMETIMES TO GET INFO FOR CLIENT
