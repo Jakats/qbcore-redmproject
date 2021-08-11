@@ -1,31 +1,5 @@
 local charPed = nil
-
-Citizen.CreateThread(function()
-    RequestImap(-1699673416)
-    RequestImap(1679934574)
-    RequestImap(183712523)
-    
-	while true do
-		Citizen.Wait(0)
-		if NetworkIsSessionStarted() then
-			TriggerEvent('qb-multicharacter:client:chooseChar')
-
-          
-			return
-		end
-	end
-end)
-
-Config = {
-    PedCoords = vector4(-558.9098, -3775.616, 238.59, 137.98), 
-    HiddenCoords = vector4(-558.9098, -3775.616, 238.59, 137.98), 
-    -- CamCoords = vector4(-814.02, 179.56, 76.74, 198.5), 
-}
-
---- CODE
-
 local choosingCharacter = false
-
 local cams = {
     {
         type = "customization",
@@ -49,72 +23,27 @@ local cams = {
     }
 }
 
-function skyCam(bool)
-    SetNuiFocus(bool, bool)
-    SendNUIMessage({
-        action = "ui",
-        toggle = bool,
-    })
-    choosingCharacter = bool
-    skyCam(bool)
-end
+Config = {
+    PedCoords = vector4(-558.9098, -3775.616, 238.59, 137.98), 
+    HiddenCoords = vector4(-558.9098, -3775.616, 238.59, 137.98), 
+    -- CamCoords = vector4(-814.02, 179.56, 76.74, 198.5), 
+}
 
-RegisterCommand("skin", function(data)
-    local cData = data.cData
-    DoScreenFadeOut(10)
-    TriggerServerEvent('qb-multicharacter:server:loadUserData', cData)
-    skyCam(true)
-    SetEntityAsMissionEntity(charPed, true, true)
-    DeleteEntity(charPed)
+Citizen.CreateThread(function()
+    RequestImap(-1699673416)
+    RequestImap(1679934574)
+    RequestImap(183712523)
+    
+	while true do
+		Citizen.Wait(0)
+		if NetworkIsSessionStarted() then
+			TriggerEvent('qb-multicharacter:client:chooseChar')
+			return
+		end
+	end
 end)
 
-RegisterNUICallback('closeUI', function()
-    skyCam(false)
-end)
-
-RegisterNUICallback('disconnectButton', function()
-    SetEntityAsMissionEntity(charPed, true, true)
-    DeleteEntity(charPed)
-    TriggerServerEvent('qb-multicharacter:server:disconnect')
-end)
-
-RegisterNUICallback('selectCharacter', function(data)
-    local cData = data.cData
-    DoScreenFadeOut(10)
-    TriggerServerEvent('qb-multicharacter:server:loadUserData', cData)
-    skyCam(false)
-    SetEntityAsMissionEntity(charPed, true, true)
-    DeleteEntity(charPed)
-end)
-
-RegisterNetEvent('qb-multicharacter:client:closeNUI')
-AddEventHandler('qb-multicharacter:client:closeNUI', function()
-    SetNuiFocus(false, false)
-end)
-
-local Countdown = 1
-
-RegisterNetEvent('qb-multicharacter:client:chooseChar')
-AddEventHandler('qb-multicharacter:client:chooseChar', function()
-    SetNuiFocus(false, false)
-    DoScreenFadeOut(10)
-    Citizen.Wait(1000)
-    GetInteriorAtCoords(-558.9098, -3775.616, 238.59, 137.98)
-    FreezeEntityPosition(PlayerPedId(), true)
-    SetEntityCoords(PlayerPedId(), Config.HiddenCoords.x, Config.HiddenCoords.y, Config.HiddenCoords.z)
-    Citizen.Wait(1500)
-    ShutdownLoadingScreen()
-    ShutdownLoadingScreenNui()
-    skyCam(true)
-end)
-
-function selectChar()
-    skyCam(true)
-end
-
-
-
-RegisterNUICallback('cDataPed', function(data)
+RegisterNUICallback('cDataPed', function(data) -- Visually seeing the char
     local cData = data.cData  
     SetEntityAsMissionEntity(charPed, true, true)
     DeleteEntity(charPed)
@@ -128,8 +57,7 @@ RegisterNUICallback('cDataPed', function(data)
                     while not HasModelLoaded(model) do
                         Citizen.Wait(0)
                     end
-                    charPed = CreatePed(2, model, Config.PedCoords.x, Config.PedCoords.y, Config.PedCoords.z - 0.98, Config.PedCoords.w, false, true)
-                    SetPedComponentVariation(charPed, 0, 0, 0, 2)
+                    charPed = CreatePed(2, model, Config.PedCoords.x, Config.PedCoords.y, Config.PedCoords.z, Config.PedCoords.w, false, true)
                     FreezeEntityPosition(charPed, false)
                     SetEntityInvincible(charPed, true)
                     PlaceObjectOnGroundProperly(charPed)
@@ -148,8 +76,7 @@ RegisterNUICallback('cDataPed', function(data)
                     while not HasModelLoaded(model) do
                         Citizen.Wait(0)
                     end
-                    charPed = CreatePed(2, model, Config.PedCoords.x, Config.PedCoords.y, Config.PedCoords.z - 0.98, Config.PedCoords.w, false, true)
-                    SetPedComponentVariation(charPed, 0, 0, 0, 2)
+                    charPed = CreatePed(2, model, Config.PedCoords.x, Config.PedCoords.y, Config.PedCoords.z, Config.PedCoords.w, false, true)
                     FreezeEntityPosition(charPed, false)
                     SetEntityInvincible(charPed, true)
                     PlaceObjectOnGroundProperly(charPed)
@@ -169,7 +96,6 @@ RegisterNUICallback('cDataPed', function(data)
                 Citizen.Wait(0)
             end
             charPed = CreatePed(2, model, Config.PedCoords.x, Config.PedCoords.y, Config.PedCoords.z - 0.98, Config.PedCoords.w, false, true)
-            SetPedComponentVariation(charPed, 0, 0, 0, 2)
             FreezeEntityPosition(charPed, false)
             SetEntityInvincible(charPed, true)
             PlaceObjectOnGroundProperly(charPed)
@@ -178,8 +104,17 @@ RegisterNUICallback('cDataPed', function(data)
     end
 end)
 
-RegisterNUICallback('setupCharacters', function()
-    QBCore.Functions.TriggerCallback("test:yeet", function(result)
+RegisterNUICallback('selectCharacter', function(data) -- When a char is selected and confirmed to use
+    local cData = data.cData
+    DoScreenFadeOut(10)
+    TriggerServerEvent('qb-multicharacter:server:loadUserData', cData)
+    giveUI(false)
+    SetEntityAsMissionEntity(charPed, true, true)
+    DeleteEntity(charPed)
+end)
+
+RegisterNUICallback('setupCharacters', function() -- Present char info
+    QBCore.Functions.TriggerCallback("qb-multicharacter:server:loadUserInfo", function(result)
         SendNUIMessage({
             action = "setupCharacters",
             characters = result
@@ -191,24 +126,59 @@ RegisterNUICallback('removeBlur', function()
     SetTimecycleModifier('default')
 end)
 
-RegisterNUICallback('createNewCharacter', function(data)
-    local cData = data
+RegisterNUICallback('createNewCharacter', function(data) -- Creating a char
     DoScreenFadeOut(150)
-    if cData.gender == "Male" then
-        cData.gender = 0
-    elseif cData.gender == "Female" then
-        cData.gender = 1
+    if data.gender == "Male" then
+        data.gender = 0
+    elseif data.gender == "Female" then
+        data.gender = 1
     end
 
-    TriggerServerEvent('qb-multicharacter:server:createCharacter', cData)
-    TriggerServerEvent('qb-multicharacter:server:GiveStarterItems')
+    TriggerServerEvent('qb-multicharacter:server:createCharacter', data)
     Citizen.Wait(500)
 end)
 
-RegisterNUICallback('removeCharacter', function(data)
+RegisterNUICallback('removeCharacter', function(data) -- Removing a char
     TriggerServerEvent('qb-multicharacter:server:deleteCharacter', data.citizenid)
     TriggerEvent('qb-multicharacter:client:chooseChar')
 end)
+
+RegisterNUICallback('disconnectButton', function() -- Disconnect
+    SetEntityAsMissionEntity(charPed, true, true)
+    DeleteEntity(charPed)
+    TriggerServerEvent('qb-multicharacter:server:disconnect')
+end)
+
+RegisterNetEvent('qb-multicharacter:client:chooseChar')
+AddEventHandler('qb-multicharacter:client:chooseChar', function()
+    SetNuiFocus(false, false)
+    DoScreenFadeOut(10)
+    Citizen.Wait(1000)
+    GetInteriorAtCoords(-558.9098, -3775.616, 238.59, 137.98)
+    FreezeEntityPosition(PlayerPedId(), true)
+    SetEntityCoords(PlayerPedId(), Config.HiddenCoords.x, Config.HiddenCoords.y, Config.HiddenCoords.z)
+    Citizen.Wait(1500)
+    ShutdownLoadingScreen()
+    ShutdownLoadingScreenNui()
+    Citizen.Wait(10)
+    giveUI(true)
+end)
+
+RegisterNetEvent('qb-multicharacter:client:closeNUI')
+AddEventHandler('qb-multicharacter:client:closeNUI', function()
+    SetNuiFocus(false, false)
+end)
+
+function giveUI(bool)
+    SetNuiFocus(bool, bool)
+    SendNUIMessage({
+        action = "ui",
+        toggle = bool,
+    })
+    choosingCharacter = bool
+    Citizen.Wait(100)
+    skyCam(bool)
+end
 
 function skyCam(bool)
     if bool then
