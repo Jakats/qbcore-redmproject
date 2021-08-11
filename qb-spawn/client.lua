@@ -237,31 +237,64 @@ AddEventHandler('qb-houses:client:setHouseConfig', function(houseConfig)
     Config.Houses = houseConfig
 end)
 
+RegisterNetEvent('qb-spawn:client:setupSpawnUI')
+AddEventHandler('qb-spawn:client:setupSpawnUI', function(cData, new)
+    if QB.EnableApartments then
+        QBCore.Functions.TriggerCallback('apartments:GetOwnedApartment', function(result)
+            if result ~= nil then
+                TriggerEvent('qb-spawn:client:setupSpawns', cData, false, nil)
+                TriggerEvent('qb-spawn:client:openUI', true)
+                TriggerEvent("apartments:client:SetHomeBlip", result.type)
+            else
+                TriggerEvent('qb-spawn:client:setupSpawns', cData, true, Apartments.Locations)
+                TriggerEvent('qb-spawn:client:openUI', true)
+            end
+        end, cData.citizenid)
+    else
+        TriggerEvent('qb-spawn:client:setupSpawns', cData, new, nil)
+        TriggerEvent('qb-spawn:client:openUI', true)
+    end
+end)
+
 RegisterNetEvent('qb-spawn:client:setupSpawns')
 AddEventHandler('qb-spawn:client:setupSpawns', function(cData, new, apps)
     if not new then
-        QBCore.Functions.TriggerCallback('qb-spawn:server:getOwnedHouses', function(houses)
-            local myHouses = {}
-            if houses ~= nil then
-                for i = 1, (#houses), 1 do
-                    table.insert(myHouses, {
-                        house = houses[i].house,
-                        label = Config.Houses[houses[i].house].adress,
-                    })
+        if QB.EnableHouses then
+            QBCore.Functions.TriggerCallback('qb-spawn:server:getOwnedHouses', function(houses)
+                local myHouses = {}
+                if houses ~= nil then
+                    for i = 1, (#houses), 1 do
+                        table.insert(myHouses, {
+                            house = houses[i].house,
+                            label = Config.Houses[houses[i].house].adress,
+                        })
+                    end
                 end
-            end
 
-            Citizen.Wait(500)
+                Citizen.Wait(500)
+                SendNUIMessage({
+                    action = "setupLocations",
+                    locations = QB.Spawns,
+                    houses = myHouses,
+                })
+            end, cData.citizenid)
+        else
             SendNUIMessage({
                 action = "setupLocations",
                 locations = QB.Spawns,
-                houses = myHouses,
+                houses = {},
             })
-        end, cData.citizenid)
-    elseif new then
+        end
+    elseif new and QB.EnableApartments then
         SendNUIMessage({
             action = "setupAppartements",
             locations = apps,
+        })
+    else
+        SendNUIMessage({
+            action = "setupLocations",
+            locations = QB.DefaultSpawn,
+            houses = {},
         })
     end
 end)
